@@ -1,4 +1,4 @@
-crawlwebpages
+Google Search Crawler
 =============
 
-a tool for crawl web pages
+a tool for crawl Google search results
