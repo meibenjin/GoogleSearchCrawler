@@ -1,6 +1,6 @@
 This is a simple google search results crawler
 
-before use this tool, please read these tips below
+Before use this tool, please read these tips below.
 
 1.  In order to extract search results from google, you would need a html 
 parser in these tool, I have used BeautifulSoup. therefore, you need install 
