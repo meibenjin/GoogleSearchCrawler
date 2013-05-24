@@ -64,7 +64,7 @@ class SearchResult:
         print 
 
     def writeFile(self, filename):
-        file = open(fileName, 'a')
+        file = open(filename, 'a')
         try:
             file.write('url:' + self.url+ '\n')
             file.write('title:' + self.title + '\n')
