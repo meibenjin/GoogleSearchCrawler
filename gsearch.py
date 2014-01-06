@@ -12,6 +12,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 import urllib2, socket, time
+import gzip, StringIO
 import re, random, types
 
 from bs4 import BeautifulSoup 
@@ -143,9 +144,13 @@ class GoogleAPI:
                     user_agent = user_agents[index] 
                     request.add_header('User-agent', user_agent)
                     request.add_header('connection','keep-alive')
+                    request.add_header('Accept-Encoding', 'gzip')
                     request.add_header('referer', base_url)
                     response = urllib2.urlopen(request)
                     html = response.read() 
+                    if(response.headers.get('content-encoding', None) == 'gzip'):
+                        html = gzip.GzipFile(fileobj=StringIO.StringIO(html)).read()
+
                     results = self.extractSearchResults(html)
                     search_results.extend(results)
                     break;
@@ -179,7 +184,7 @@ def crawler():
     api = GoogleAPI()
 
     # set expect search results to be crawled
-    expect_num = 10
+    expect_num = 100
     # if no parameters, read query keywords from file
     if(len(sys.argv) < 2):
         keywords = open('./keywords', 'r')
