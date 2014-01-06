@@ -137,15 +137,14 @@ class GoogleAPI:
     def search(self, query, lang='en', num=results_per_page):
         search_results = list()
         query = urllib2.quote(query)
-        if(num <= results_per_page):
-            pages = 1;
+        if(num % results_per_page == 0):
+            pages = num / results_per_page
         else:
             pages = num / results_per_page + 1
 
         for p in range(0, pages):
             start = p * results_per_page 
             url = '%s/search?hl=%s&num=%dstart=%s&q=%s' % (base_url, lang, results_per_page, start, query)
-            str = ''
             retry = 3
             while(retry > 0):
                 try:
@@ -153,7 +152,6 @@ class GoogleAPI:
                     length = len(user_agents)
                     index = random.randint(0, length-1)
                     user_agent = user_agents[index] 
-                    print index
                     request.add_header('User-agent', user_agent)
                     request.add_header('connection','keep-alive')
                     request.add_header('referer', base_url)
@@ -177,6 +175,7 @@ class GoogleAPI:
 
 def load_user_agent():
     fp = open('./user_agents', 'r')
+
     line  = fp.readline().strip('\n')
     global user_agents 
     user_agents = list()
@@ -184,22 +183,31 @@ def load_user_agent():
         user_agents.append(line)
         line = fp.readline()
     fp.close()
-        
-def test():
-    #if(len(sys.argv) < 2):
-    #    print 'please enter search query.'
-    #    return
-    #query = sys.argv[1]
+
+def crawler():
+    # Load use agent string from file
     load_user_agent()
+
+    # Create a GoogleAPI instance
     api = GoogleAPI()
-    keywords = open('./keywords', 'r')
-    keyword = keywords.readline()
-    while(keyword):
-        result = api.search(keyword, num = 20)
-        for r in result:
-            r.printIt()
+
+    # set expect search results to be crawled
+    expect_num = 20
+    # if no parameters, read query keywords from file
+    if(len(sys.argv) < 2):
+        keywords = open('./keywords', 'r')
         keyword = keywords.readline()
-    keywords.close()
+        while(keyword):
+            results = api.search(keyword, num = expect_num)
+            for r in results:
+                r.printIt()
+            keyword = keywords.readline()
+        keywords.close()
+    else:
+        keyword = sys.argv[1]
+        results = api.search(keyword, num = expect_num)
+        for r in results:
+            r.printIt()
 
 if __name__ == '__main__':
-    test()
+    crawler()
