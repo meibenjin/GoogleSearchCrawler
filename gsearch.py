@@ -17,6 +17,7 @@ import re, random, types
 from bs4 import BeautifulSoup 
 
 base_url = 'https://www.google.com.hk/'
+results_per_page = 10
 
 user_agents = ['Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20130406 Firefox/23.0', \
         'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0', \
@@ -133,46 +134,72 @@ class GoogleAPI:
     # @param query -> query key words 
     # @param lang -> language of search results  
     # @param num -> number of search results to return 
-    def search(self, query, lang='en', num=10):
-        query = urllib2.quote(query)
+    def search(self, query, lang='en', num=results_per_page):
         search_results = list()
-        url = '%s/search?hl=%s&num=%d&q=%s' % (base_url, lang, num, query)
-        str = ''
-        retry = 3
-        while(retry > 0):
-            try:
-                request = urllib2.Request(url)
-                length = len(user_agents)
-                index = random.randint(0, length-1)
-                user_agent = user_agents[index] 
-                request.add_header('User-agent', user_agent)
-                request.add_header('connection','keep-alive')
-                response = urllib2.urlopen(request)
-                html = response.read() 
-                results = self.extractSearchResults(html)
-                return results
-            except urllib2.URLError,e:
-                print 'url error:', e
-                self.randomSleep()
-                retry = retry - 1
-                continue
-            
-            except Exception, e:
-                print 'error:', e
-                retry = retry - 1
-                self.randomSleep()
-                continue
-        return search_results
+        query = urllib2.quote(query)
+        if(num <= results_per_page):
+            pages = 1;
+        else:
+            pages = num / results_per_page + 1
+
+        for p in range(0, pages):
+            start = p * results_per_page 
+            url = '%s/search?hl=%s&num=%dstart=%s&q=%s' % (base_url, lang, results_per_page, start, query)
+            str = ''
+            retry = 3
+            while(retry > 0):
+                try:
+                    request = urllib2.Request(url)
+                    length = len(user_agents)
+                    index = random.randint(0, length-1)
+                    user_agent = user_agents[index] 
+                    print index
+                    request.add_header('User-agent', user_agent)
+                    request.add_header('connection','keep-alive')
+                    request.add_header('referer', base_url)
+                    response = urllib2.urlopen(request)
+                    html = response.read() 
+                    results = self.extractSearchResults(html)
+                    search_results.extend(results)
+                    break;
+                except urllib2.URLError,e:
+                    print 'url error:', e
+                    self.randomSleep()
+                    retry = retry - 1
+                    continue
+                
+                except Exception, e:
+                    print 'error:', e
+                    retry = retry - 1
+                    self.randomSleep()
+                    continue
+        return search_results 
+
+def load_user_agent():
+    fp = open('./user_agents', 'r')
+    line  = fp.readline().strip('\n')
+    global user_agents 
+    user_agents = list()
+    while(line):
+        user_agents.append(line)
+        line = fp.readline()
+    fp.close()
         
 def test():
-    if(len(sys.argv) < 2):
-        print 'please enter search query.'
-        return
-    query = sys.argv[1]
+    #if(len(sys.argv) < 2):
+    #    print 'please enter search query.'
+    #    return
+    #query = sys.argv[1]
+    load_user_agent()
     api = GoogleAPI()
-    result = api.search(query)
-    for r in result:
-        r.printIt()
+    keywords = open('./keywords', 'r')
+    keyword = keywords.readline()
+    while(keyword):
+        result = api.search(keyword, num = 20)
+        for r in result:
+            r.printIt()
+        keyword = keywords.readline()
+    keywords.close()
 
 if __name__ == '__main__':
     test()
