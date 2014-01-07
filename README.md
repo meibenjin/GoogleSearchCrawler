@@ -26,4 +26,3 @@ Use
     >python gsearch.py
 
 3. If there are any problems or bugs about this tool, please contact me.
-        Email: meibenjin@gmail.com 
