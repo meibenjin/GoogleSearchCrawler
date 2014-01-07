@@ -14,7 +14,7 @@ Requirements
     
     For more information about BeautifuleSoup, please visit: http://www.crummy.com/software/BeautifulSoup/
 
-Use
+How to Use?
 ----------------------
 1. single key word
     
