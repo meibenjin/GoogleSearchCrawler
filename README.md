@@ -5,7 +5,7 @@ This is a simple google search results crawler. Before use this tool, please rea
 
 Requirements
 ----------------------
-# In order to extract search results from google, you would need a html 
+    In order to extract search results from google, you would need a html 
 parser, I have used BeautifulSoup. therefore, you need install 
 BeautifulSoup in your python. For more information about BeautifuleSoup, please
 visit: http://www.crummy.com/software/BeautifulSoup/
