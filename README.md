@@ -14,8 +14,6 @@ Requirements
 
 Use
 ----------------------
-This tool provides two ways to crawl Google's search results
-    
 1. single key word
     
     >python gsearch.py 'your query key words'
