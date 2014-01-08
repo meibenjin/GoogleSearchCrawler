@@ -184,7 +184,7 @@ def crawler():
     api = GoogleAPI()
 
     # set expect search results to be crawled
-    expect_num = 100
+    expect_num = 10
     # if no parameters, read query keywords from file
     if(len(sys.argv) < 2):
         keywords = open('./keywords', 'r')
