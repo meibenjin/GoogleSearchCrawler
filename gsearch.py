@@ -77,9 +77,9 @@ class GoogleAPI:
         time.sleep(sleeptime)
 
     #extract the domain of a url
-    def extractDomain(self, url):
+    def extractUrl(self, url):
         domain = ''
-        pattern = re.compile(r'http[s]?://([^/]+)/', re.U | re.M)
+        pattern = re.compile(r'(http[s]?://[^&]+)&', re.U | re.M)
         url_match = pattern.search(url)
         if(url_match and url_match.lastindex > 0):
             domain = url_match.group(1)
@@ -106,7 +106,7 @@ class GoogleAPI:
                         continue
 
                     url = link['href']
-                    url = self.extractDomain(url)
+                    url = self.extractUrl(url)
                     if(cmp(url, '') == 0):
                         continue
                     title = link.renderContents()
