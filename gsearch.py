@@ -77,14 +77,24 @@ class GoogleAPI:
         time.sleep(sleeptime)
 
     #extract the domain of a url
-    def extractUrl(self, url):
+    def extractDomain(self, url):
         domain = ''
-        pattern = re.compile(r'(http[s]?://[^&]+)&', re.U | re.M)
+        pattern = re.compile(r'http[s]?://([^/]+)/', re.U | re.M)
         url_match = pattern.search(url)
         if(url_match and url_match.lastindex > 0):
             domain = url_match.group(1)
 
         return domain
+
+    #extract a url from a link
+    def extractUrl(self, href):
+        url = ''
+        pattern = re.compile(r'(http[s]?://[^&]+)&', re.U | re.M)
+        url_match = pattern.search(href)
+        if(url_match and url_match.lastindex > 0):
+            url = url_match.group(1)
+
+        return url 
 
     # extract serach results list from downloaded html file
     def extractSearchResults(self, html):
