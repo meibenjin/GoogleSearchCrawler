@@ -144,7 +144,7 @@ class GoogleAPI:
 
         for p in range(0, pages):
             start = p * results_per_page 
-            url = '%s/search?hl=%s&num=%dstart=%s&q=%s' % (base_url, lang, results_per_page, start, query)
+            url = '%s/search?hl=%s&num=%d&start=%s&q=%s' % (base_url, lang, results_per_page, start, query)
             retry = 3
             while(retry > 0):
                 try:
