@@ -183,7 +183,7 @@ def load_user_agent():
     line  = fp.readline().strip('\n')
     while(line):
         user_agents.append(line)
-        line = fp.readline()
+        line = fp.readline().strip('\n')
     fp.close()
 
 def crawler():
