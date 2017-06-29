@@ -99,7 +99,7 @@ class GoogleAPI:
     # extract serach results list from downloaded html file
     def extractSearchResults(self, html):
         results = list()
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, 'html.parser')
         div = soup.find('div', id  = 'search')
         if (type(div) != types.NoneType):
             lis = div.findAll('li', {'class': 'g'})
