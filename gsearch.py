@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #
 # Create by Meibenjin.
 #
@@ -8,9 +8,6 @@
 # google search results crawler
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 import urllib2
 import socket
 import time
@@ -19,8 +16,10 @@ import StringIO
 import re
 import random
 import types
-
 from bs4 import BeautifulSoup
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 base_url = 'https://www.google.com.hk/'
 results_per_page = 10
@@ -67,7 +66,6 @@ class SearchResult:
             file.write('url:' + self.url + '\n')
             file.write('title:' + self.title + '\n')
             file.write('content:' + self.content + '\n\n')
-
         except IOError, e:
             print 'file error:', e
         finally:
@@ -83,8 +81,11 @@ class GoogleAPI:
         sleeptime = random.randint(60, 120)
         time.sleep(sleeptime)
 
-    # extract the domain of a url
     def extractDomain(self, url):
+        """Return string
+
+        extract the domain of a url
+        """
         domain = ''
         pattern = re.compile(r'http[s]?://([^/]+)/', re.U | re.M)
         url_match = pattern.search(url)
@@ -93,8 +94,11 @@ class GoogleAPI:
 
         return domain
 
-    # extract a url from a link
     def extractUrl(self, href):
+        """ Return a string
+
+        extract a url from a link
+        """
         url = ''
         pattern = re.compile(r'(http[s]?://[^&]+)&', re.U | re.M)
         url_match = pattern.search(href)
@@ -103,8 +107,11 @@ class GoogleAPI:
 
         return url
 
-    # extract serach results list from downloaded html file
     def extractSearchResults(self, html):
+        """Return a list
+
+        extract serach results list from downloaded html file
+        """
         results = list()
         soup = BeautifulSoup(html, 'html.parser')
         div = soup.find('div', id='search')
@@ -116,12 +123,10 @@ class GoogleAPI:
                     h3 = li.find('h3', {'class': 'r'})
                     if(type(h3) == types.NoneType):
                         continue
-
                     # extract domain and title from h3 object
                     link = h3.find('a')
                     if (type(link) == types.NoneType):
                         continue
-
                     url = link['href']
                     url = self.extractUrl(url)
                     if(cmp(url, '') == 0):
@@ -129,7 +134,6 @@ class GoogleAPI:
                     title = link.renderContents()
                     result.setURL(url)
                     result.setTitle(title)
-
                     span = li.find('span', {'class': 'st'})
                     if (type(span) != types.NoneType):
                         content = span.renderContents()
@@ -137,11 +141,14 @@ class GoogleAPI:
                     results.append(result)
         return results
 
-    # search web
-    # @param query -> query key words
-    # @param lang -> language of search results
-    # @param num -> number of search results to return
     def search(self, query, lang='en', num=results_per_page):
+        """Return a list of lists
+
+        search web
+        @param query -> query key words
+        @param lang -> language of search results
+        @param num -> number of search results to return
+        """
         search_results = list()
         query = urllib2.quote(query)
         if(num % results_per_page == 0):
