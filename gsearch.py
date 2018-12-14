@@ -102,7 +102,7 @@ class GoogleAPI:
         soup = BeautifulSoup(html, 'html.parser')
         div = soup.find('div', id  = 'search')
         if (type(div) != types.NoneType):
-            lis = div.findAll('li', {'class': 'g'})
+            lis = div.findAll('div', {'class': 'g'})
             if(len(lis) > 0):
                 for li in lis:
                     result = SearchResult()
