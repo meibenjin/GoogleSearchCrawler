@@ -8,6 +8,8 @@
 # google search results crawler
 
 import sys
+import os
+from os.path import join, dirname
 import urllib2
 import socket
 import time
@@ -16,13 +18,22 @@ import StringIO
 import re
 import random
 import types
+from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-base_url = 'https://www.google.com.hk/'
-results_per_page = 10
+# Load config from .env file
+# TODO: Error handling
+try:
+    dotenv_path = join(dirname(__file__), '.env')
+    load_dotenv(dotenv_path)
+    base_url = os.environ.get('BASE_URL')
+    results_per_page = int(os.environ.get('RESULTS_PER_PAGE'))
+except:
+    print "ERROR: Make sure you have .env file with proper config"
+    sys.exit(1)
 
 user_agents = list()
 
