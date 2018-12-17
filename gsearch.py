@@ -9,7 +9,6 @@
 
 import sys
 import os
-from os.path import join, dirname
 import urllib2
 import socket
 import time
@@ -18,7 +17,7 @@ import StringIO
 import re
 import random
 import types
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from bs4 import BeautifulSoup
 
 reload(sys)
@@ -27,8 +26,7 @@ sys.setdefaultencoding('utf-8')
 # Load config from .env file
 # TODO: Error handling
 try:
-    dotenv_path = join(dirname(__file__), '.env')
-    load_dotenv(dotenv_path)
+    load_dotenv(find_dotenv())
     base_url = os.environ.get('BASE_URL')
     results_per_page = int(os.environ.get('RESULTS_PER_PAGE'))
 except:
