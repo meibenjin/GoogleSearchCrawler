@@ -141,11 +141,13 @@ class GoogleAPI:
                     if(cmp(url, '') == 0):
                         continue
                     title = link.renderContents()
+                    title = re.sub(r'<.+?>', '', title)
                     result.setURL(url)
                     result.setTitle(title)
                     span = li.find('span', {'class': 'st'})
                     if (type(span) != types.NoneType):
                         content = span.renderContents()
+                        content = re.sub(r'<.+?>', '', content)
                         result.setContent(content)
                     results.append(result)
         return results
