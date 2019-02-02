@@ -26,7 +26,7 @@ sys.setdefaultencoding('utf-8')
 # Load config from .env file
 # TODO: Error handling
 try:
-    load_dotenv(find_dotenv())
+    load_dotenv(find_dotenv(usecwd=True))
     base_url = os.environ.get('BASE_URL')
     results_per_page = int(os.environ.get('RESULTS_PER_PAGE'))
 except:
