@@ -123,16 +123,19 @@ class GoogleAPI:
         results = list()
         soup = BeautifulSoup(html, 'html.parser')
         div = soup.find('div', id='main')
+        if (type(div) == types.NoneType):
+            div = soup.find('div', id='center_col')
+        if (type(div) == types.NoneType):
+            div = soup.find('body')
         if (type(div) != types.NoneType):
             lis = div.findAll('a')
             if(len(lis) > 0):
                 for link in lis:
-                    result = SearchResult()
-                    
                     if (type(link) == types.NoneType):
                         continue
+                    
                     url = link['href']
-                    if url.index("https://maps.google.com/maps") == 0:
+                    if url.find(".google") > 6:
                         continue
                         
                     url = self.extractUrl(url)
@@ -140,6 +143,7 @@ class GoogleAPI:
                         continue
                     title = link.renderContents()
                     title = re.sub(r'<.+?>', '', title)
+                    result = SearchResult()
                     result.setURL(url)
                     result.setTitle(title)
                     span = link.find('div')
@@ -196,7 +200,7 @@ class GoogleAPI:
                     continue
 
                 except Exception, e:
-                    print 'error:', e
+                    print ('error:', e)
                     retry = retry - 1
                     self.randomSleep()
                     continue
