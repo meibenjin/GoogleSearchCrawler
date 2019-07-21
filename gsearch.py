@@ -64,11 +64,10 @@ class SearchResult:
         self.content = content
 
     def printIt(self, prefix=''):
-        print 'url\t->', self.url
-        print 'title\t->', self.title
-        print 'content\t->', self.content
-        print
-
+        print ('url\t->', self.url, '\n',
+            'title\t->', self.title, '\n',
+            'content\t->', self.content)
+        
     def writeFile(self, filename):
         file = open(filename, 'a')
         try:
@@ -76,7 +75,7 @@ class SearchResult:
             file.write('title:' + self.title + '\n')
             file.write('content:' + self.content + '\n\n')
         except IOError, e:
-            print 'file error:', e
+            print ('file error:', e)
         finally:
             file.close()
 
@@ -123,20 +122,19 @@ class GoogleAPI:
         """
         results = list()
         soup = BeautifulSoup(html, 'html.parser')
-        div = soup.find('div', id='search')
+        div = soup.find('div', id='main')
         if (type(div) != types.NoneType):
-            lis = div.findAll('div', {'class': 'g'})
+            lis = div.findAll('a')
             if(len(lis) > 0):
-                for li in lis:
+                for link in lis:
                     result = SearchResult()
-                    h3 = li.find('h3', {'class': 'r'})
-                    if(type(h3) == types.NoneType):
-                        continue
-                    # extract domain and title from h3 object
-                    link = h3.find('a')
+                    
                     if (type(link) == types.NoneType):
                         continue
                     url = link['href']
+                    if url.index("https://maps.google.com/maps") == 0:
+                        continue
+                        
                     url = self.extractUrl(url)
                     if(cmp(url, '') == 0):
                         continue
@@ -144,7 +142,7 @@ class GoogleAPI:
                     title = re.sub(r'<.+?>', '', title)
                     result.setURL(url)
                     result.setTitle(title)
-                    span = li.find('span', {'class': 'st'})
+                    span = link.find('div')
                     if (type(span) != types.NoneType):
                         content = span.renderContents()
                         content = re.sub(r'<.+?>', '', content)
@@ -192,7 +190,7 @@ class GoogleAPI:
                     search_results.extend(results)
                     break
                 except urllib2.URLError, e:
-                    print 'url error:', e
+                    print ('url error:', e)
                     self.randomSleep()
                     retry = retry - 1
                     continue
